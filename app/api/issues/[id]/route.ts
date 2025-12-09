@@ -1,5 +1,5 @@
 import AuthOptions from "@/app/auth/AuthOptions";
-import { IssueSchema } from "@/app/ZodValidationSchemas/IssueSchema";
+import { PatchIssueSchema } from "@/app/ZodValidationSchemas/IssueSchema";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,10 +14,24 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 const body = await request.json();
 const { id } = await params;
 
-const isValidator= IssueSchema.safeParse(body);
+const isValidator= PatchIssueSchema.safeParse(body);
 
 if(!isValidator.success)
     return NextResponse.json({error: isValidator.error.issues[0].message}, {status:400}); 
+
+// Convert empty string to null for assignToUserId
+const assignToUserId = body.assignToUserId === "" ? null : body.assignToUserId;
+
+if(assignToUserId){
+    const userExists = await prisma.user.findUnique({
+        where:{
+            id: assignToUserId
+        }
+    });
+
+    if(!userExists)
+        return NextResponse.json({error: "User not found"}, {status:404});
+}
 
 const isExisit = await prisma.issue.findUnique({
     where:{
@@ -35,6 +49,7 @@ const updatedIssue = await prisma.issue.update({
     data:{
         title: body.title,
         description: body.description,
+        assignToUserId
     }
 })
 
