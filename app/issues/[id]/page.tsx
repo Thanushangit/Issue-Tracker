@@ -9,20 +9,24 @@ import { getServerSession } from "next-auth";
 import AuthOptions from "@/app/auth/AuthOptions";
 import AssigneeSelect from "./AssigneeSelect";
 import { Metadata } from "next";
+import { cache } from "react";
+import { id } from "zod/v4/locales";
 
 interface props {
   params: { id: string };
 }
 
+const fetchIssue = cache(async (id: string) => {
+  return await prisma.issue.findUnique({
+    where: { id },
+  });
+});
+
 const IssueDetailsPage = async ({ params }: props) => {
   const session = await getServerSession(AuthOptions);
 
   const { id } = await params;
-  const issue = await prisma.issue.findUnique({
-    where: {
-      id: id,
-    },
-  });
+  const issue = await fetchIssue(id);
 
   if (!issue) {
     notFound();
@@ -59,11 +63,7 @@ export default IssueDetailsPage;
 
 export async function generateMetadata({ params }) {
   const id = await params.id;
-  const issue = await prisma.issue.findUnique({
-    where: {
-      id,
-    },
-  });
+  const issue = await fetchIssue(id);
   if (!issue) {
     return {
       title: "Issue Not Found",
