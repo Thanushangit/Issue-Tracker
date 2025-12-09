@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import IssueSummary from "./IssueSummary";
 import LatestIssuePage from "./LatestIssuePage";
@@ -32,3 +33,8 @@ export default async function Home() {
     </Grid>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Issue Tracker Dashboard",
+  description: "Overview of issues in the Issue Tracker application",
+};

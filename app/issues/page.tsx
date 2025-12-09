@@ -6,6 +6,7 @@ import { Issue, Status } from "@prisma/client";
 import Link from "next/link";
 import { FaArrowUp } from "react-icons/fa6";
 import Pagination from "../components/Pagination";
+import { Metadata } from "next";
 
 const IssuePage = async ({
   searchParams,
@@ -106,3 +107,9 @@ const IssuePage = async ({
 };
 
 export default IssuePage;
+
+export const metadata: Metadata = {
+  title: "Issue Tracker - Issues-List",
+  description: "List of issues in the Issue Tracker application",
+};
+

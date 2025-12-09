@@ -8,6 +8,7 @@ import DeleteIssueButton from "./DeleteIssueButton";
 import { getServerSession } from "next-auth";
 import AuthOptions from "@/app/auth/AuthOptions";
 import AssigneeSelect from "./AssigneeSelect";
+import { Metadata } from "next";
 
 interface props {
   params: { id: string };
@@ -40,7 +41,7 @@ const IssueDetailsPage = async ({ params }: props) => {
       </Box>
       {session && (
         <Flex direction={{ initial: "column", md: "row" }} gap="5">
-          <AssigneeSelect issue={issue}/>
+          <AssigneeSelect issue={issue} />
           <Button>
             <SlNote />
             <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
@@ -55,3 +56,22 @@ const IssueDetailsPage = async ({ params }: props) => {
 export const dynamic = "force-dynamic";
 
 export default IssueDetailsPage;
+
+export async function generateMetadata({ params }) {
+  const id = await params.id;
+  const issue = await prisma.issue.findUnique({
+    where: {
+      id,
+    },
+  });
+  if (!issue) {
+    return {
+      title: "Issue Not Found",
+      description: "The requested issue does not exist.",
+    };
+  }
+  return {
+    title: issue.title,
+    description: issue.description,
+  };
+}
