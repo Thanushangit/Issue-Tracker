@@ -1,10 +1,16 @@
+import AuthOptions from "@/app/auth/AuthOptions";
 import { IssueSchema } from "@/app/ZodValidationSchemas/IssueSchema";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 
 //update issue
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const session = await getServerSession(AuthOptions);
+    if(!session){
+        return NextResponse.json({error: "Unauthorized"}, {status:401});
+    }
 const body = await request.json();
 const { id } = await params;
 
@@ -38,6 +44,10 @@ return NextResponse.json(updatedIssue,{status:200})
 
 //delete issue
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+     const session = await getServerSession(AuthOptions);
+    if(!session){
+        return NextResponse.json({error: "Unauthorized"}, {status:401});
+    }
     const { id } = await params;
     const isExisit = await prisma.issue.findUnique({
         where:{

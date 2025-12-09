@@ -23,7 +23,7 @@ interface IssueForm {
 }
 
 interface issue {
-  props: Issue;
+  props?: Issue;
 }
 
 const IssueForm = ({ props }: issue) => {

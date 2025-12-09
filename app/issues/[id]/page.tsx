@@ -5,12 +5,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SlNote } from "react-icons/sl";
 import DeleteIssueButton from "./DeleteIssueButton";
+import { getServerSession } from "next-auth";
+import AuthOptions from "@/app/auth/AuthOptions";
 
 interface props {
   params: { id: string };
 }
 
 const IssueDetailsPage = async ({ params }: props) => {
+  const session = await getServerSession(AuthOptions);
+
   const { id } = await params;
   const issue = await prisma.issue.findUnique({
     where: {
@@ -33,17 +37,15 @@ const IssueDetailsPage = async ({ params }: props) => {
           <p>{issue.description}</p>
         </Card>
       </Box>
-      <Flex
-        direction={{ initial: "column", md: "row" }}
-        gap="5"
-        
-      >
-        <Button>
-          <SlNote />
-          <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
-        </Button>
-        <DeleteIssueButton issueId={issue.id} />
-      </Flex>
+      {session && (
+        <Flex direction={{ initial: "column", md: "row" }} gap="5">
+          <Button>
+            <SlNote />
+            <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
+          </Button>
+          <DeleteIssueButton issueId={issue.id} />
+        </Flex>
+      )}
     </Grid>
   );
 };
