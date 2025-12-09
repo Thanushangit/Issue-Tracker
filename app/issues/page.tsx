@@ -42,7 +42,7 @@ const IssuePage = async ({
   const skip = (page - 1) * pageSize;
   const issues = await prisma.issue.findMany({
     where: status ? { status } : {},
-    orderBy: orderBy ? { [orderBy]: "asc" } : [],
+    orderBy: orderBy ? { [orderBy]: "desc" } : { createdAt: "desc" },
     skip,
     take: pageSize,
   });
@@ -112,4 +112,3 @@ export const metadata: Metadata = {
   title: "Issue Tracker - Issues-List",
   description: "List of issues in the Issue Tracker application",
 };
-

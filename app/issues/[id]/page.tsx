@@ -60,7 +60,7 @@ export const dynamic = "force-dynamic";
 export default IssueDetailsPage;
 
 export async function generateMetadata({ params }: props) {
-  const id = await params.id;
+  const { id } = await params;
   const issue = await fetchIssue(id);
   if (!issue) {
     return {
