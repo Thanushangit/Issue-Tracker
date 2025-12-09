@@ -4,6 +4,7 @@ import { Box, Button, Card, Flex, Grid, Heading } from "@radix-ui/themes";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SlNote } from "react-icons/sl";
+import DeleteIssueButton from "./DeleteIssueButton";
 
 interface props {
   params: { id: string };
@@ -32,12 +33,17 @@ const IssueDetailsPage = async ({ params }: props) => {
           <p>{issue.description}</p>
         </Card>
       </Box>
-      <Box>
+      <Flex
+        direction={{ initial: "column", md: "row" }}
+        gap="5"
+        
+      >
         <Button>
           <SlNote />
           <Link href={`/issues/${issue.id}/edit`}>Edit Issue</Link>
         </Button>
-      </Box>
+        <DeleteIssueButton issueId={issue.id} />
+      </Flex>
     </Grid>
   );
 };
