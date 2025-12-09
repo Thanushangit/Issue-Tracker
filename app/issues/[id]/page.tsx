@@ -1,16 +1,14 @@
+import AuthOptions from "@/app/auth/AuthOptions";
 import IssueStatusBadge from "@/app/components/IssueStatusBadge";
 import { prisma } from "@/lib/prisma";
 import { Box, Button, Card, Flex, Grid, Heading } from "@radix-ui/themes";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SlNote } from "react-icons/sl";
-import DeleteIssueButton from "./DeleteIssueButton";
-import { getServerSession } from "next-auth";
-import AuthOptions from "@/app/auth/AuthOptions";
-import AssigneeSelect from "./AssigneeSelect";
-import { Metadata } from "next";
 import { cache } from "react";
-import { id } from "zod/v4/locales";
+import { SlNote } from "react-icons/sl";
+import AssigneeSelect from "./AssigneeSelect";
+import DeleteIssueButton from "./DeleteIssueButton";
 
 interface props {
   params: { id: string };
@@ -61,7 +59,7 @@ export const dynamic = "force-dynamic";
 
 export default IssueDetailsPage;
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: props) {
   const id = await params.id;
   const issue = await fetchIssue(id);
   if (!issue) {
